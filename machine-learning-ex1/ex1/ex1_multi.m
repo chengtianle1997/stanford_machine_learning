@@ -49,7 +49,7 @@ pause;
 % Scale features and set them to zero mean
 fprintf('Normalizing Features ...\n');
 
-[X mu sigma] = featureNormalize(X);
+[X, mu, sigma] = featureNormalize(X);
 
 % Add intercept term to X
 X = [ones(m, 1) X];
@@ -105,7 +105,7 @@ fprintf('\n');
 % Recall that the first column of X is all-ones. Thus, it does
 % not need to be normalized.
 price = 0; % You should change this
-
+price = [1, (1650 - mu(1))/ sigma(1), (3 - mu(2)) / sigma(2)] * theta;
 
 % ============================================================
 
@@ -128,7 +128,6 @@ fprintf('Solving with normal equations...\n');
 %               After doing so, you should complete this code 
 %               to predict the price of a 1650 sq-ft, 3 br house.
 %
-
 %% Load Data
 data = csvread('ex1data2.txt');
 X = data(:, 1:2);
@@ -150,7 +149,7 @@ fprintf('\n');
 % Estimate the price of a 1650 sq-ft, 3 br house
 % ====================== YOUR CODE HERE ======================
 price = 0; % You should change this
-
+price = [1, 1650, 3] * theta;
 
 % ============================================================
 

@@ -32,9 +32,10 @@ n = size(X, 1);
 for i = 1:m
     mu(i) = mean(X(:,i));
     mu_ma = ones(n, 1) .* mu(i);
-    sigma(i) = std(X(:,i));
-    range = max(X(:,i)) - min(X(:,i));
-    X_norm(:,i) = (X(:,i) - mu_ma) ./ range;
+%     sigma(i) = std(X(:,i));
+%     range = max(X(:,i)) - min(X(:,i));
+    sigma(i) = max(X(:,i)) - min(X(:,i));
+    X_norm(:,i) = (X(:,i) - mu_ma) ./ sigma(i);
 end
 
 
