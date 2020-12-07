@@ -24,6 +24,7 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
 
 % Setup some useful variables
 m = size(X, 1);
+K = num_labels;
          
 % You need to return the following variables correctly 
 J = 0;
@@ -62,23 +63,37 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+% Extend y to yx
+yx = zeros(m, K);
+for i = 1: m
+    yx(i, y(i)) = 1;
+end
+% Unit matrix
+unit_mat = ones(m, K);
+% Add ones to the X data matrix
+X = [ones(m, 1) X];
+% Hidden layer
+H_1 = sigmoid(X * Theta1');
+% Add ones
+H_1 = [ones(m, 1) H_1];
+% Output layer
+H_x = sigmoid(H_1 * Theta2');
+% Compute cost function J
+J = sum(sum(-yx .* log(H_x) - (unit_mat - yx) .* log(unit_mat - H_x))) ./ m + lambda .* (sum(sum(Theta1(:, 2:end).^2)) + sum(sum(Theta2(:, 2:end).^2))) ./ (2 .* m);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+% Back propgation
+for t = 1:m
+    X_t = [1, X(t, :)];
+    y_t = y(t, :);
+    a_1 = X_t;
+    z_2 = X_t * Theta1';
+    a_2 = sigmoid(z_2);
+    a_2 = [1, a_2];
+    z_3 = a_2 * Theta2;
+    a_3 = sigmoid(z_3);
+    delta_3 = a_3 - y_t;
+    delta_2 = delta_3 * Theta2 .* 
+end
 
 % -------------------------------------------------------------
 
