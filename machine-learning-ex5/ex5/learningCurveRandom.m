@@ -1,6 +1,6 @@
 function [error_train, error_val] = ...
-    learningCurve(X, y, Xval, yval, lambda)
-%LEARNINGCURVE Generates the train and cross validation set errors needed 
+    learningCurveRandom(X, y, Xval, yval, lambda)
+%LEARNINGCURVERANDOM Generates the train and cross validation set errors needed 
 %to plot a learning curve
 %   [error_train, error_val] = ...
 %       LEARNINGCURVE(X, y, Xval, yval, lambda) returns the train and
@@ -10,8 +10,8 @@ function [error_train, error_val] = ...
 %       i examples (and similarly for error_val(i)).
 %
 %   In this function, you will compute the train and test errors for
-%   dataset sizes from 1 up to m. In practice, when working with larger
-%   datasets, you might want to do this in larger intervals.
+%   dataset sizes from 1 up to m which are all selected randomly. 
+%   In practice, when working with large datasets, you might want to do this in larger intervals.
 %
 
 % Number of training examples
@@ -54,11 +54,25 @@ error_val   = zeros(m, 1);
 %
 
 % ---------------------- Sample Solution ----------------------
-
+cycle_times = 50;
 for i = 1:m
-    [theta] = trainLinearReg(X(1:i, :), y(1:i), lambda);
-    error_train(i) = sum((X(1:i, :) * theta - y(1:i)).^2) ./ (2 * i);
-    error_val(i) = sum((Xval * theta - yval).^2) ./ (2 * m_val);
+    error_train_once = zeros(cycle_times, 1);
+    error_val_once = zeros(cycle_times, 1);
+    % Repeat the random select for several times
+    for t = 1:cycle_times
+        % Select i items from the dataset randomly
+        selected_index = randperm(m, i);
+        X_selected = X(selected_index, :);
+        y_selected = y(selected_index, :);
+        selected_index_val = randperm(m_val, i);
+        Xval_selected = Xval(selected_index_val, :);
+        yval_selected = yval(selected_index_val, :);
+        [theta] = trainLinearReg(X_selected, y_selected, lambda);
+        error_train_once(t) = sum((X_selected * theta - y_selected).^2) ./ (2 * i);
+        error_val_once(t) = sum((Xval_selected * theta - yval_selected).^2) ./ (2 * i);
+    end
+    error_train(i) = mean(error_train_once);
+    error_val(i) = mean(error_val_once);
 end
 
 % -------------------------------------------------------------
