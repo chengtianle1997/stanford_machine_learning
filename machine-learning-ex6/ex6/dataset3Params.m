@@ -31,12 +31,16 @@ sigma_list = [0.01 0.03 0.1 0.3 1 3 10 30];
 for C_n = C_list
     for sigma_n = sigma_list
         model = svmTrain(X, y, C_n, @(x1, x2) gaussianKernel(x1, x2, sigma_n));
-        visualizeBoundary(X, y, model);
+        % Visualize boundary
+%         visualizeBoundary(X, y, model);
+%         fprintf('Program paused. Press enter to continue.\n');
+%         pause;
         predictions = svmPredict(model, Xval);
         error = mean(double(predictions ~= yval));
         if error < min_error
             C = C_n;
             sigma = sigma_n;
+            min_error = error;
         end
     end
 end
